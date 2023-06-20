@@ -1,5 +1,7 @@
 package com.devsuperior.dsmovie.services;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,6 +62,9 @@ public class ScoreServiceTests {
 		movieDTO = MovieFactory.createMovieDTO();
 		scoreDTO = ScoreFactory.createScoreDTO();
 
+		Mockito.when(movieRepository.findById(existingMovieId)).thenReturn(Optional.of(movieEntity));
+		Mockito.when(movieRepository.findById(nonExistingMovieId)).thenReturn(Optional.empty());
+		
 		Mockito.when(movieRepository.existsById(existingMovieId)).thenReturn(true);
 		Mockito.when(movieRepository.existsById(dependendMovieId)).thenReturn(true);
 		Mockito.when(movieRepository.existsById(nonExistingMovieId)).thenThrow(EntityNotFoundException.class);
@@ -75,7 +80,6 @@ public class ScoreServiceTests {
 		movieEntity.setId(existingMovieId);
 		scoreEntity.setMovie(movieEntity);
 		scoreEntity.setUser(client);
-		//MovieDTO temp = new MovieDTO(movieEntity);
 		ScoreDTO temp2 = new ScoreDTO(existingMovieId, 2.5);
 		MovieDTO result = service.saveScore(temp2);
 		Assertions.assertNotNull(result);
